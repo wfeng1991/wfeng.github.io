@@ -505,6 +505,13 @@
       if (CONFIG.sidebar === 'always') {
         displaySidebar();
       }
+	  var tags = $(".post-tags a")
+      for(i in tags){
+        if(tags[i].href){
+          tags[i].href = '/mybolg/tags/' + tags[i].innerText;
+        }
+        
+      } 
     });
   </script>
 

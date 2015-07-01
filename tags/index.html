@@ -283,9 +283,12 @@
       if (CONFIG.sidebar === 'always') {
         displaySidebar();
       }
-      var tags = $(".tag-cloud-tags ~a")
+      var tags = $(".tag-cloud-tags a")
       for(i in tags){
-        tags[i].href = '/mybolg/tags' + tags[i].innerText;
+        if(tags[i].href){
+          tags[i].href = '/mybolg/tags/' + tags[i].innerText;
+        }
+        
       }      
     });
 
