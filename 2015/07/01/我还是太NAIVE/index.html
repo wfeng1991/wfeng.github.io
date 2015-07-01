@@ -45,7 +45,7 @@
 
 
 
-  <title> 说明 // Wfeng's Bolg </title>
+  <title> 我还是太NAIVE // Wfeng's Bolg </title>
 </head>
 
 <body>
@@ -140,7 +140,7 @@
           
           
             
-              说明
+              我还是太NAIVE
             
           
         </h1>
@@ -148,7 +148,7 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015-06-30
+          发表于 2015-07-01
         </span>
 
         
@@ -165,8 +165,25 @@
       
 
       
-        <p>因为BOLG地址是github的二级域名，所以在访问首页、归档、标签页面时会404，这个暂时我还没有想到好的解决办法，昨天搞了很久用java去替换所有html中的链接地址但是只能解决首页问题，子页面访问首页、归档、标签依然404.暂时就这样，没时间去搞了。</p>
-
+        <p>  原本访问出现404的情况是配置问题。</p>
+<hr>
+<p>  如果是二级域名首先要在Hexo的配置文件_config.yml中修改:</p>
+<pre><code>#If your site is put <span class="keyword">in</span> a subdirectory, 
+#set url <span class="keyword">as</span> <span class="string">'http://yoursite.com/child'</span> and root <span class="keyword">as</span> <span class="string">'/child/'</span>
+<span class="string">url:</span> <span class="string">http:</span><span class="comment">//wfeng1991.github.io/mybolg/</span>
+<span class="string">root:</span> /mybolg
+<span class="string">permalink:</span> :year<span class="regexp">/:month/</span>:day<span class="regexp">/:title/</span>
+<span class="string">permalink_defaults:</span>
+</code></pre><hr>
+<p>  然后在相应的主题配置中修改配置文件_config.yml:</p>
+<pre><code><span class="string">menu:</span>
+<span class="string">home:</span> /mybolg
+<span class="string">ategories:</span> <span class="regexp">/mybolg/</span>categories
+<span class="string">about:</span> <span class="regexp">/mybolg/</span>about
+<span class="string">archives:</span> <span class="regexp">/mybolg/</span>archives
+<span class="string">tags:</span> <span class="regexp">/mybolg/</span>tags
+<span class="string">commonweal:</span> /<span class="number">404.</span>html
+</code></pre>
       
     </div>
 
@@ -177,13 +194,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/mybolg/2015/07/01/我还是太NAIVE/">我还是太NAIVE</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/mybolg/2015/06/29/我的第一篇博客/">我的第一篇博客</a>
+              <a href="/mybolg/2015/06/30/说明/">说明</a>
             
           </div>
         </div>
