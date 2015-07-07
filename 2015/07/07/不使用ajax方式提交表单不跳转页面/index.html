@@ -22,7 +22,7 @@
 
 
 
-  <meta name="keywords" content="Java," />
+  <meta name="keywords" content="html," />
 
 
 
@@ -45,7 +45,7 @@
 
 
 
-  <title> 替换目录中指定后缀名文件中的内容 // Wfeng's Bolg </title>
+  <title> 不使用ajax方式提交表单不跳转页面 // Wfeng's Bolg </title>
 </head>
 
 <body>
@@ -140,7 +140,7 @@
           
           
             
-              替换目录中指定后缀名文件中的内容
+              不使用ajax方式提交表单不跳转页面
             
           
         </h1>
@@ -148,7 +148,7 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015-07-01
+          发表于 2015-07-07
         </span>
 
         
@@ -165,113 +165,62 @@
       
 
       
-        <p>   昨天由于不会玩Hexo，点击很多url会404，费了好多时间都没弄好。但是自己还是写了一点自认为有用的代码，现在贴在这里：<br> <a id="more"></a></p>
-<hr>
-<pre><code><span class="keyword">import</span> java.io.<span class="keyword">BufferedReader</span>;
-<span class="keyword">import</span> java.io.File;
-<span class="keyword">import</span> java.io.FileInputStream;
-<span class="keyword">import</span> java.io.FileOutputStream;
-<span class="keyword">import</span> java.io.IOException;
-<span class="keyword">import</span> java.io.InputStreamReader;
-<span class="keyword">import</span> java.io.OutputStreamWriter;
-<span class="keyword">import</span> java.io.PrintWriter;
-<span class="keyword">import</span> java.util.ArrayList;
-
-
-<span class="keyword">public</span> class RepalceHexo {
-    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span>[] args) {
-
-        ArrayList&lt;File&gt; al = getFile(<span class="keyword">new</span> File(<span class="string">"D:\\Hexo\\public"</span>));
-
-        <span class="keyword">for</span>(File f : al){
-            <span class="keyword">if</span> (f.getName().matches(<span class="string">".*\\.html$"</span>)){ <span class="comment">// 匹配java格式的文件</span>
-                replaceFile(f);
-            }                        
+        <p>&emsp;&emsp;前些天碰到了一个Excel文件上传解析的功能要做，需要实现在提交Excel文件后，依然驻留在本页面。当时没有想到要怎么实现，除了ajax方式外，但是当时不知怎么我脑子抽风不想使用ajax，还好让我找到一种原始的实现方式。实现思路就是在页面写一个空的iframe，再写一个span空标签，原始的表单action为空，target为上述的iframe。代码片段如下：<br> <a id="more"></a><br>        <iframe name="attachment_iframe" frameborder="0" border="0" style="display:none;width:0px;height:0px;"></iframe>        </p>
+<pre><code><span class="tag">&lt;<span class="title">form</span> <span class="attribute">id</span>=<span class="value">"attachmentForm"</span> 
+    <span class="attribute">action</span>=<span class="value">"${ctx}/animalepidemic
+            /basiciiformation/epWarehouse/importExcel?id=${epWarehouse.id}"</span> 
+    <span class="attribute">method</span>=<span class="value">"post"</span> <span class="attribute">enctype</span>=<span class="value">"multipart/form-data"</span>
+    <span class="attribute">target</span>=<span class="value">"attachment_iframe"</span> 
+    <span class="attribute">style</span>=<span class="value">"display:none;width:0px;height:0px;"</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">id</span>=<span class="value">"attachmentContent"</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+    <span class="comment">&lt;!--  &lt;input type="hidden" id="attachmentNum" name="attachmentNum"/&gt; --&gt;</span>
+<span class="tag">&lt;/<span class="title">form</span>&gt;</span>
+<span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"myModal"</span> <span class="attribute">class</span>=<span class="value">"modal hide fade"</span> <span class="attribute">tabindex</span>=<span class="value">"-1"</span>
+    <span class="attribute">role</span>=<span class="value">"dialog"</span> <span class="attribute">aria-labelledby</span>=<span class="value">"myModalLabel"</span> <span class="attribute">aria-hidden</span>=<span class="value">"true"</span>&gt;</span>  
+      <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"modal-header"</span>&gt;</span>  
+         <span class="tag">&lt;<span class="title">button</span> <span class="attribute">type</span>=<span class="value">"button"</span> <span class="attribute">class</span>=<span class="value">"close"</span>
+              <span class="attribute">data-dismiss</span>=<span class="value">"modal"</span> <span class="attribute">aria-hidden</span>=<span class="value">"true"</span>&gt;</span>×<span class="tag">&lt;/<span class="title">button</span>&gt;</span>  
+         <span class="tag">&lt;<span class="title">h3</span> <span class="attribute">id</span>=<span class="value">"myModalLabel"</span>&gt;</span>选择文件<span class="tag">&lt;/<span class="title">h3</span>&gt;</span>  
+     <span class="tag">&lt;/<span class="title">div</span>&gt;</span>  
+     <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"modal-body"</span>&gt;</span>  
+         <span class="tag">&lt;<span class="title">form</span>  <span class="attribute">method</span>=<span class="value">"post"</span> <span class="attribute">target</span>=<span class="value">"attachment_iframe"</span>&gt;</span>                 
+          <span class="tag">&lt;<span class="title">input</span> <span class="attribute">id</span>=<span class="value">"filesubmit"</span> <span class="attribute">type</span>=<span class="value">"file"</span> <span class="attribute">style</span>=<span class="value">"display:inline-flex;"</span>
+               <span class="attribute">name</span>=<span class="value">"importExcel"</span> <span class="attribute">id</span>=<span class="value">"importExcel"</span>&gt;</span>                  
+        <span class="tag">&lt;/<span class="title">form</span>&gt;</span> 
+      <span class="tag">&lt;/<span class="title">div</span>&gt;</span>  
+     <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"modal-footer"</span>&gt;</span>  
+         <span class="tag">&lt;<span class="title">button</span> <span class="attribute">class</span>=<span class="value">"btn"</span> <span class="attribute">data-dismiss</span>=<span class="value">"modal"</span> <span class="attribute">aria-hidden</span>=<span class="value">"true"</span>&gt;</span>取消<span class="tag">&lt;/<span class="title">button</span>&gt;</span>  
+         <span class="tag">&lt;<span class="title">shiro:hasPermission</span> <span class="attribute">name</span>=<span class="value">"animalepidemic:basiciiformation:epWarehouse:edit"</span>&gt;</span>
+             <span class="tag">&lt;<span class="title">button</span> <span class="attribute">class</span>=<span class="value">"btn btn-primary"</span> <span class="attribute">data-dismiss</span>=<span class="value">"modal"</span>
+                  <span class="attribute">aria-hidden</span>=<span class="value">"true"</span> <span class="attribute">onclick</span>=<span class="value">"comfirm()"</span>&gt;</span>
+                 确认
+             <span class="tag">&lt;/<span class="title">button</span>&gt;</span>
+         <span class="tag">&lt;/<span class="title">shiro:hasPermission</span>&gt;</span>  
+     <span class="tag">&lt;/<span class="title">div</span>&gt;</span>  
+ <span class="tag">&lt;/<span class="title">div</span>&gt;</span> 
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript">    
+    <span class="function"><span class="keyword">function</span> <span class="title">comfirm</span>(<span class="params"></span>)</span>{
+        <span class="keyword">var</span> af = $(<span class="string">'#filesubmit'</span>);
+        <span class="comment">//检查是否选择了文件</span>
+        <span class="keyword">if</span>(af.val()==<span class="string">''</span>) {
+            $.alert(<span class="string">"提示"</span>,<span class="string">'请选择要上传的文件'</span>);
+            <span class="keyword">return</span>;
         }
-
-<span class="comment">//        for(File f : al){</span>
-<span class="comment">//            if(f.getName().matches(".*\\.html_$")){</span>
-<span class="comment">//                System.out.println(f.getName());</span>
-<span class="comment">//                f.delete();            </span>
-<span class="comment">//            }            </span>
-<span class="comment">//        }</span>
-    }
-
-    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> replaceFile(File f) {
-        <span class="keyword">BufferedReader</span> br = <span class="keyword">null</span>;
-        PrintWriter bw =<span class="keyword">null</span>;
-        <span class="keyword">try</span> {
-            br = <span class="keyword">new</span> <span class="keyword">BufferedReader</span>(
-                <span class="keyword">new</span> InputStreamReader(
-                    <span class="keyword">new</span> FileInputStream(f),<span class="string">"utf-8"</span>));            
-            bw = <span class="keyword">new</span> PrintWriter(
-                <span class="keyword">new</span> OutputStreamWriter(
-                    <span class="keyword">new</span> FileOutputStream(
-                        <span class="keyword">new</span> File(f.getAbsoluteFile()+<span class="string">"_"</span>)),<span class="string">"utf-8"</span>));
-            <span class="keyword">String</span> <span class="built_in">line</span> = <span class="string">""</span>;
-            <span class="keyword">String</span> s = <span class="string">""</span>;
-            <span class="keyword">String</span> s1 = <span class="string">""</span>;
-            <span class="keyword">while</span> ((<span class="built_in">line</span> = br.readLine()) != <span class="keyword">null</span>) {
-                <span class="built_in">line</span> = <span class="built_in">line</span>.<span class="built_in">trim</span>();
-
-<span class="comment">//                s= line.replaceAll("href=\"/mybolg/", "href=\"/");</span>
-<span class="comment">//                s1 = line.replaceAll("href=\"/mybolg/", "src=\"/");</span>
-                s= <span class="built_in">line</span>.replaceAll(<span class="string">"href=\"/"</span>, <span class="string">"href=\"/mybolg/"</span>);                    
-                s1 = <span class="built_in">line</span>.replaceAll(<span class="string">"src=\"/"</span>, <span class="string">"href=\"/mybolg/"</span>);                    
-                <span class="keyword">if</span>(s!=<span class="built_in">line</span>){
-                    bw.write(s);
-                }<span class="keyword">else</span> <span class="keyword">if</span>(s1!=<span class="built_in">line</span>){
-                    bw.write(s1);                    
-                }<span class="keyword">else</span>{
-                    bw.write(<span class="built_in">line</span>);                        
-                }        
-            }
-<span class="comment">//            br.close();</span>
-<span class="comment">//            bw.close();</span>
-<span class="comment">//            br = new BufferedReader(</span>
-<span class="comment">//                    new InputStreamReader(</span>
-<span class="comment">//                        new FileInputStream(f.getAbsoluteFile()+"_"),"utf-8"));            </span>
-<span class="comment">//            bw = new PrintWriter(</span>
-<span class="comment">//                    new OutputStreamWriter(</span>
-<span class="comment">//                        new FileOutputStream(</span>
-<span class="comment">//                            new File(f.getAbsoluteFile()+"")),"utf-8"));</span>
-<span class="comment">//            </span>
-<span class="comment">//            while ((line = br.readLine()) != null) {</span>
-<span class="comment">//                line = line.trim();            </span>
-<span class="comment">//                bw.write(line);                                                </span>
-<span class="comment">//            }</span>
-
-        } <span class="keyword">catch</span> (Exception e) {
-            e.printStackTrace();
-        } <span class="keyword">finally</span> {
-            <span class="keyword">if</span> (br != <span class="keyword">null</span>) {
-                <span class="keyword">try</span> {
-                    br.close();
-                    br = <span class="keyword">null</span>;
-                } <span class="keyword">catch</span> (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            <span class="keyword">if</span> (bw != <span class="keyword">null</span>) {
-                bw.close();
-                bw = <span class="keyword">null</span>;
-            }
-        }
-    }
-    <span class="comment">//递归取得指定目录下的全部文件</span>
-    <span class="keyword">static</span> ArrayList&lt;File&gt; fileArray = <span class="keyword">new</span> ArrayList&lt;File&gt;();
-    <span class="keyword">public</span> <span class="keyword">static</span> ArrayList&lt;File&gt; getFile(File f) {
-        File[] ff = f.listFiles();
-        <span class="keyword">for</span> (File child : ff) {
-            <span class="keyword">if</span> (child.isDirectory()) {
-                getFile(child);
-            } <span class="keyword">else</span>
-                fileArray.<span class="built_in">add</span>(child);            
-        }
-        <span class="keyword">return</span> fileArray;
+        <span class="comment">//将file移动至上传表单</span>
+        $(<span class="string">'#attachmentContent'</span>).empty();
+        $(<span class="string">'#attachmentContent'</span>).append(af);
+        <span class="comment">//复制一个file放至原处</span>
+        $(<span class="string">'#filesubmit'</span>).append(af.clone().attr(<span class="string">'value'</span>,<span class="string">''</span>));
+        <span class="comment">//$('#attachmentText'+n).attr('value','');</span>
+        <span class="comment">//修改属性</span>
+        af.attr(<span class="string">'id'</span>,<span class="string">''</span>);
+        <span class="comment">//其他表单</span>
+        <span class="comment">//$('#attachmentNum').val(n);</span>
+        $(<span class="string">'#attachmentForm'</span>).submit();
+        <span class="comment">//$('#filesubmit').submit();                    </span>
 
     }
-}
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 </code></pre>
       
     </div>
@@ -280,7 +229,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Java/"> #Java </a>
+            <a href="/tags/html/"> #html </a>
           
         </div>
       
@@ -289,13 +238,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/07/02/java实现简单二叉树/">java实现简单数据结构</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/07/01/hello-world/">Hello World</a>
+              <a href="/2015/07/02/java实现简单二叉树/">java实现简单数据结构</a>
             
           </div>
         </div>
