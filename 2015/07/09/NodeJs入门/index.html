@@ -22,7 +22,7 @@
 
 
 
-  <meta name="keywords" content="Hexo,next" />
+  <meta name="keywords" content="Node.js," />
 
 
 
@@ -45,7 +45,7 @@
 
 
 
-  <title> Hello World // Wfeng's Bolg </title>
+  <title> NodeJs入门 // Wfeng's Bolg </title>
 </head>
 
 <body>
@@ -140,7 +140,7 @@
           
           
             
-              Hello World
+              NodeJs入门
             
           
         </h1>
@@ -148,7 +148,7 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015-07-01
+          发表于 2015-07-09
         </span>
 
         
@@ -165,33 +165,61 @@
       
 
       
-        <p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.<br> <a id="more"></a></p>
-<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <p>&emsp;&emsp;自从用Node.js在github上弄了个静态bolg后，就对Node.js爱不释手。乘着还有三分热情赶紧做些练习。以下是我从青大（母校啊）上扒下来HTML，并取得其中部分标题，用到了http、iconv-lite、cheerio这三个模块，http是用来请求数据的，iconv-lite用来解决非UTF-8编码控制台中文乱码问题，cheerio就是Node.js下的JQuery了。<br><a id="more"></a></p>
+<pre><code><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);
 
+<span class="keyword">var</span> iconv = <span class="built_in">require</span>(<span class="string">'iconv-lite'</span>);
+
+<span class="keyword">var</span> cheerio = <span class="built_in">require</span>(<span class="string">'cheerio'</span>);
+
+<span class="keyword">var</span> url = <span class="string">'http://www.qdu.edu.cn/'</span>;
+
+<span class="function"><span class="keyword">function</span> <span class="title">filterChapters</span>(<span class="params">html</span>)</span>{
+    <span class="keyword">var</span> $ = cheerio.load(html);
+    <span class="keyword">var</span> newsTitles = $(<span class="string">'#nav ul li'</span>);
+    newsTitles.each(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>)</span>{
+        <span class="keyword">var</span> me = $(<span class="keyword">this</span>);
+        <span class="keyword">var</span> title = me.find(<span class="string">'a'</span>).text();
+        <span class="built_in">console</span>.log(title);
+    });
+}
+
+http.get(url,<span class="function"><span class="keyword">function</span>(<span class="params">res</span>)</span>{
+    <span class="keyword">var</span> html = <span class="string">''</span>;
+
+    res.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>{
+        data = iconv.decode(data, <span class="string">'gb2312'</span>);
+        html += data;
+    });
+
+    res.on(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
+        filterChapters(html);
+    })
+}).on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
+    <span class="built_in">console</span>.log(<span class="string">'获取页面html错误！'</span>);
+});
+</code></pre>
       
     </div>
 
     <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Node-js/"> #Node.js </a>
+          
+        </div>
       
 
       
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/07/01/替换目录/">替换目录中指定后缀名文件中的内容</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/07/01/我还是太NAIVE/">我还是太NAIVE</a>
+              <a href="/2015/07/07/不使用ajax方式提交表单不跳转页面/">不使用ajax方式提交表单不跳转页面</a>
             
           </div>
         </div>
@@ -297,7 +325,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick_Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create_a_new_post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run_server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate_static_files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy_to_remote_sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
