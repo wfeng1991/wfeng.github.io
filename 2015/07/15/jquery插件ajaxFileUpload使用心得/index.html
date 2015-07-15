@@ -22,7 +22,7 @@
 
 
 
-  <meta name="keywords" content="Hexo,next" />
+  <meta name="keywords" content="JavaScript," />
 
 
 
@@ -45,7 +45,7 @@
 
 
 
-  <title> Hello World // Wfeng's Bolg </title>
+  <title> jquery插件ajaxFileUpload使用心得 // Wfeng's Bolg </title>
 </head>
 
 <body>
@@ -140,7 +140,7 @@
           
           
             
-              Hello World
+              jquery插件ajaxFileUpload使用心得
             
           
         </h1>
@@ -148,7 +148,7 @@
 
       <div class="post-meta">
         <span class="post-time">
-          发表于 2015-07-01
+          发表于 2015-07-15
         </span>
 
         
@@ -165,33 +165,81 @@
       
 
       
-        <p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.<br> <a id="more"></a></p>
-<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <p>&emsp;&emsp;今天需要做一个异步excel文件上传并且在页面以table形式显示出来。我在网上找了半天发现Jquery的一个文件上传插件ajaxFIleUpload很好用。于是我就下载了一个试了下，确实使用起来很简单。但是有个问题，就是后台（我用的servlet）返回的数据是String类型时，而前端设置的dataType设置为’json’时，即使上传成功也不会调用success回调函数。同样也没办法解析后台传回来的数据。后来发现后台传回来的字符串不符合json格式，ajaxFileUpload.js中执行以下方法是后出错：<br><a id="more"></a></p>
+<pre><code>uploadHttpData: function( r, <span class="keyword">type</span> ) {
+        <span class="built_in">var</span> <span class="built_in">data</span> <span class="subst">=</span> <span class="subst">!</span><span class="keyword">type</span>;
+        <span class="built_in">data</span> <span class="subst">=</span> <span class="keyword">type</span> <span class="subst">==</span> <span class="string">"xml"</span> <span class="subst">||</span> <span class="built_in">data</span> <span class="subst">?</span> r<span class="built_in">.</span>responseXML : r<span class="built_in">.</span>responseText;
+        <span class="comment">// If the type is "script", eval it in global context</span>
+        <span class="keyword">if</span> ( <span class="keyword">type</span> <span class="subst">==</span> <span class="string">"script"</span> )
+            jQuery<span class="built_in">.</span>globalEval( <span class="built_in">data</span> );
+        <span class="comment">// Get the JavaScript object, if JSON is used.</span>
+        <span class="keyword">if</span> ( <span class="keyword">type</span> <span class="subst">==</span> <span class="string">"json"</span> )                   
+           eval( <span class="string">"data = "</span> <span class="subst">+</span> <span class="built_in">data</span> );
+        <span class="comment">// evaluate scripts within html</span>
+        <span class="keyword">if</span> ( <span class="keyword">type</span> <span class="subst">==</span> <span class="string">"html"</span> )
+            jQuery(<span class="string">"&lt;div&gt;"</span>)<span class="built_in">.</span>html(<span class="built_in">data</span>)<span class="built_in">.</span>evalScripts();
+
+        <span class="keyword">return</span> <span class="built_in">data</span>;
+    }
+</code></pre><p>&emsp;&emsp;这里就有两个选择要么该ajaxFileUpload.js源代码，要么改dataType为text。我觉得还是尽量采取第二种方法，因为这个插件可能还有别人在使用，要注意的是后者需要自己解析传回来的字符串（字符串可能会跟后台传的原始字符串有点不同，我的是被包裹在一个pre标签中），但也没那么麻烦。以下是我的代码：</p>
+<pre><code><span class="function"><span class="keyword">function</span> <span class="title">comfirm</span>(<span class="params"></span>)</span>{
+    <span class="keyword">var</span> af = $(<span class="string">'#filesubmit'</span>);
+    <span class="comment">//检查是否选择了文件</span>
+    <span class="keyword">if</span>(af.val()==<span class="string">''</span>) {
+        alert(<span class="string">'请选择要上传的文件'</span>);
+        <span class="keyword">return</span>;
+    }                
+    <span class="keyword">var</span> url = <span class="string">'${ctx}/projsub/warehouse/Warehouse/importExcel?id=${warehouse.id}'</span>;
+    $.ajaxFileUpload({
+              url:url,<span class="comment">//服务器端程序</span>
+              secureuri:<span class="literal">false</span>,
+              fileElementId:<span class="string">'filesubmit'</span>,<span class="comment">//input框的ID</span>
+              dataType: <span class="string">'text'</span>,<span class="comment">//返回数据类型</span>
+              beforeSend:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{<span class="comment">//上传前需要处理的工作，如显示Loading...</span>
+          },
+          success: <span class="function"><span class="keyword">function</span> (<span class="params">data, status</span>)</span>{<span class="comment">//上传成功</span>
+            <span class="keyword">var</span>  epWarehousedtsTpl = $(<span class="string">"#epWarehousedtsTpl"</span>).html()
+                                    .replace(<span class="regexp">/(\/\/\&lt;!\-\-)|(\/\/\-\-&gt;)/g</span>,<span class="string">""</span>);
+            data= data.substring(data.indexOf(<span class="string">"["</span>) , data.lastIndexOf(<span class="string">"]"</span>)+<span class="number">1</span>);
+            <span class="keyword">var</span> epWarehousedtsRowIdx = $(<span class="string">'#epWarehousedtsList tr'</span>).length;
+            data =  <span class="built_in">eval</span>(<span class="string">'('</span>+data+<span class="string">')'</span>); 
+            <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;data.length; i++){
+                addRow(<span class="string">'#epWarehousedtsList'</span>, epWarehousedtsRowIdx,
+                         epWarehousedtsTpl, data[i]);
+                epWarehousedtsRowIdx = epWarehousedtsRowIdx + <span class="number">1</span>;
+            }
+          },
+
+        });
+    <span class="comment">//只允许导入一次</span>
+    $(<span class="string">'#import'</span>).hide();
+    <span class="comment">//$('#displayform').empty();</span>
+    <span class="comment">//$('#displayform').append(af.clone().attr('value',''));</span>
+
+}
+</code></pre><p>&emsp;&emsp;另外生成table时使用的是Mustache。Mustache是基于JavaScript实现的模版引擎，类似于JQuery Template，但是这个模版更加的轻量级，语法更加的简单易用，很容易上手。我对这个暂时还不是很熟，下次有了心得再写点。</p>
 
       
     </div>
 
     <div class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/JavaScript/"> #JavaScript </a>
+          
+        </div>
+      
 
       
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/07/01/替换目录/">替换目录中指定后缀名文件中的内容</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/07/01/我还是太NAIVE/">我还是太NAIVE</a>
+              <a href="/2015/07/09/NodeJs入门/">NodeJs入门</a>
             
           </div>
         </div>
@@ -297,7 +345,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick_Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create_a_new_post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run_server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate_static_files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy_to_remote_sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
